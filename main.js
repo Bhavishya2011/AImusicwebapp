@@ -12,14 +12,37 @@ function draw() {
 
 song1 = "";
 song2 = "";
+leftWristX = 0;
+leftWristY = 0;
+rightWristX = 0;
+rightWristY = 0;
 
 function preload()
 {
     song1 = loadSound("Charmer.mp3");
-    song2 = loadSound("");
+    song2 = loadSound("MyBag.mp3");
 }
 
 function play()
 {
     song.play();
+    song.setVolume(1);
+    song.rate(1);
+}
+
+function modelLoaded() {
+    console.log('PoseNet is Initialized');
+}
+
+function gotPoses(results){
+    if(results.length > 0)
+    {
+        console.log(results);
+        leftWristX = results[0].pose.leftWrist.x;
+        leftWristY = results[0].pose.leftWrist.y;
+        console.log("leftWrist = " + leftWristX + "leftWristY = " + leftWristY);
+        rightWristX = results[0].pose.rightWrist.x;
+        rightWristY = results[0].pose.rightWrist.y;
+        console.log("rightWrist = " + rightWristX + "rightWristY = " + rightWristY);
+    }
 }
