@@ -1,9 +1,57 @@
-function setup() {
-    canvas = createCanvas(600, 500);
-    canvas.center();
+song1 = "";
+song2 = "";
 
-    video = createCapture(VIDEO);
-    video.hide();
+song1_status = "";
+song2_status = "";
+
+scoreRightWrist = 0;
+scoreLeftWrist = 0;
+
+rightWristX = 0;
+rightWristY = 0;
+
+leftWristX = 0;
+leftWristY = 0;
+
+function preload()
+{
+	song1 = loadSound("Charmer.mp3");
+	song2 = loadSound("MyBag.mp3");
+}
+
+function setup() {
+	canvas =  createCanvas(600, 500);
+	canvas.center();
+
+	video = createCapture(VIDEO);
+	video.hide();
+
+	poseNet = ml5.poseNet(video, modelLoaded);
+	poseNet.on('pose', gotPoses);
+}
+
+function modelLoaded() {
+  console.log('PoseNet Is Initialized');
+}
+
+function gotPoses(results)
+{
+  if(results.length > 0)
+  {
+	console.log(results);
+	scoreRightWrist =  results[0].pose.keypoints[10].score;
+	scoreLeftWrist =  results[0].pose.keypoints[9].score;
+	console.log("scoreRightWrist = " + scoreRightWrist + "scoreLeftWrist = " + scoreLeftWrist);
+	
+	rightWristX = results[0].pose.rightWrist.x;
+	rightWristY = results[0].pose.rightWrist.y;
+	console.log("rightWristX = " + rightWristX +" rightWristY = "+ rightWristY);
+
+	leftWristX = results[0].pose.leftWrist.x;
+	leftWristY = results[0].pose.leftWrist.y;
+	console.log("leftWristX = " + leftWristX +" leftWristY = "+ leftWristY);
+		
+  }
 }
 
 function draw() {
@@ -24,7 +72,7 @@ function draw() {
 		if(song1_status == false)
 		{
 			song1.play();
-			document.getElementById("song").innerHTML = "Playing - Charmer"
+			document.getElementById("song").innerHTML = "Playing - Charmer by Stray Kids"
 		}
 	}
 
@@ -37,47 +85,17 @@ function draw() {
 		if(song2_status == false)
 		{
 			song2.play();
-			document.getElementById("song").innerHTML = "Playing - My Bag"
+			document.getElementById("song").innerHTML = "Playing - My Bag by (g)i-dle"
 		}
 	}
 
 }
 
-song1 = "";
-song2 = "";
-song1_status = "";
-song2_status = "";
-leftWristX = 0;
-leftWristY = 0;
-rightWristX = 0;
-rightWristY = 0;
-
-function preload()
-{
-    song1 = loadSound("Charmer.mp3");
-    song2 = loadSound("MyBag.mp3");
-}
-
 function play()
 {
-    song.play();
-    song.setVolume(1);
-    song.rate(1);
+	song.play();
+	song.setVolume(1);
+	song.rate(1);
 }
 
-function modelLoaded() {
-    console.log('PoseNet is Initialized');
-}
 
-function gotPoses(results){
-    if(results.length > 0)
-    {
-        console.log(results);
-        leftWristX = results[0].pose.leftWrist.x;
-        leftWristY = results[0].pose.leftWrist.y;
-        console.log("leftWrist = " + leftWristX + "leftWristY = " + leftWristY);
-        rightWristX = results[0].pose.rightWrist.x;
-        rightWristY = results[0].pose.rightWrist.y;
-        console.log("rightWrist = " + rightWristX + "rightWristY = " + rightWristY);
-    }
-}
